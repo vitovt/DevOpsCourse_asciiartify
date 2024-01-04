@@ -94,6 +94,8 @@ minikube service hello-world --url -n hello
 #This command will return a URL. Open it in your browser or use a tool like `curl` to send a request.
 #i.e.: curl http://192.168.49.2:30691
 ```
+#### DEMOnstration
+![Image](.assets/deploy-helloapp.gif)
 
 ### Step 2: Clean Up
 
