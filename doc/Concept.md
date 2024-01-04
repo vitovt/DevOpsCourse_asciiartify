@@ -73,78 +73,37 @@ In this demonstration, we'll deploy a simple "Hello World" application on a Kube
 - **Minikube**: Ensure that Minikube is installed on your machine. If not, you can download it from the [Minikube GitHub releases page]().
 - **kubectl**: The Kubernetes command-line tool, `kubectl`, should also be installed for interacting with the Kubernetes cluster.
 
-### Step 1: Start Minikube
+### Step 1: Deploy
 
-First, start your Minikube cluster:
+```sh
+minikube start
+kubectl create namespace hello
 
-bashCopy code
+#This command creates a deployment named "hello-world" using a simple "Hello World" application container image hosted on Google's container registry.
+kubectl create deployment hello-world -n hello --image=gcr.io/google-samples/hello-app:1.0
 
-`minikube start`
+#This creates a Service, which will route traffic to your application:
+kubectl expose deployment hello-world -n hello --type=NodePort --port=8080
+#The `--type=NodePort` option makes your application accessible outside of your Minikube cluster.
 
-This command initializes a local Kubernetes cluster on your machine.
+#Check the status of your pods and services in the hello namespace using:
+kubectl get pods,svc -n hello
 
-### Step 2: Create a Deployment
+# Use the `minikube service` command to get the URL of your application:
+minikube service hello-world --url -n hello
+#This command will return a URL. Open it in your browser or use a tool like `curl` to send a request.
+#i.e.: curl http://192.168.49.2:30691
+```
 
-A Kubernetes deployment ensures that a specified number of pod replicas, each running your application, are running at all times. Create a deployment using the `kubectl create` command:
-
-bashCopy code
-
-`kubectl create deployment hello-world --image=gcr.io/google-samples/hello-app:1.0`
-
-This command creates a deployment named "hello-world" using a simple "Hello World" application container image hosted on Google's container registry.
-
-### Step 3: Expose the Deployment
-
-Expose the deployment to external traffic using the `kubectl expose` command. This creates a Service, which will route traffic to your application:
-
-bashCopy code
-
-`kubectl expose deployment hello-world --type=NodePort --port=8080`
-
-The `--type=NodePort` option makes your application accessible outside of your Minikube cluster.
-
-### Step 4: Find the Application URL
-
-Minikube provides a convenient way to access exposed services. Use the `minikube service` command to get the URL of your application:
-
-bashCopy code
-
-`minikube service hello-world --url`
-
-This command will return a URL. Open it in your browser or use a tool like `curl` to send a request.
-
-### Step 5: View the Application Output
-
-Open the URL provided by the previous step in your web browser, or use a command-line tool like `curl` to view the output:
-
-bashCopy code
-
-`curl $(minikube service hello-world --url)`
-
-You should see a message like "Hello, world!" indicating that your application is running and accessible.
-
-### Step 6: Clean Up
+### Step 2: Clean Up
 
 After you're done, you can clean up the resources you created:
 
-1. **Delete the Service**:
-    
-    bashCopy code
-    
-    `kubectl delete service hello-world`
-    
-2. **Delete the Deployment**:
-    
-    bashCopy code
-    
-    `kubectl delete deployment hello-world`
-    
-3. **Stop Minikube** (optional):
-    
-    bashCopy code
-    
-    `minikube stop`
-    
+```sh
+kubectl delete service hello-world -n hello
+kubectl delete deployment hello-world -n hello
+kubectl delete namespace hello
+```
 
 ### Conclusion for Hello World deploy
 
